@@ -1,0 +1,23 @@
+<resources>
+    <string name="app_name">Online Shop</string>
+    <string name="login">Login</string>
+    <string name="register">Register</string>
+    <string name="usernameHint">Username:</string>
+    <string name="passwordHint">Password:</string>
+    <string name="emailHint">Email:</string>
+    <string name="username">Username</string>
+    <string name="password">Password</string>
+    <string name="welcome">Welcome</string>
+    <string name="home">HOME</string>
+    <string name="menu">MENU</string>
+    <string name="account">ACCOUNT</string>
+    <string name="bag">BAG</string>
+    <string name="purchase_history">Purchase history</string>
+    <string name="my_profile">My profile</string>
+    <string name="email">Email</string>
+    <string name="end_session">End Session</string>
+    <string name="change_password">Change Password</string>
+    <string name="new_password">New Password:</string>
+    <string name="old_password">Old password:</string>
+    <string name="save">Save</string>
+</resources>
