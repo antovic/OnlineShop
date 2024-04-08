@@ -22,6 +22,7 @@ public class HomeActivity extends AppCompatActivity implements View.OnClickListe
     Button bagButton;
     AccountFragment accountFragment;
     HomeFragment homeFragment;
+    MenuFragment menuFragment;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -36,6 +37,7 @@ public class HomeActivity extends AppCompatActivity implements View.OnClickListe
         bagButton = findViewById(R.id.bagButton);
         accountFragment = AccountFragment.newInstance("AccountFragment", "AccountFragment");
         homeFragment = HomeFragment.newInstance("HomeFragment", "HomeFragment");
+        menuFragment = MenuFragment.newInstance("MenuFragment", "MenuFragment");
         getSupportFragmentManager().beginTransaction()
                 .replace(R.id.fragmentLayout, homeFragment)
                 .commit();
@@ -48,16 +50,17 @@ public class HomeActivity extends AppCompatActivity implements View.OnClickListe
         // Styling
         homeButton.setBackgroundColor(Color.BLUE);
         homeButton.setTextColor(Color.WHITE);
-        menuButton.setEnabled(false);
+        menuButton.setBackgroundColor(Color.BLUE);
+        menuButton.setTextColor(Color.WHITE);
         accountButton.setBackgroundColor(Color.BLUE);
         accountButton.setTextColor(Color.WHITE);
         bagButton.setEnabled(false);
     }
-    //cao
 
     @SuppressLint("NonConstantResourceId")
     @Override
     public void onClick(View v) {
+        menuButton.setBackgroundColor(Color.BLUE);
         switch (v.getId()){
             case R.id.homeButton:
                 getSupportFragmentManager().beginTransaction()
@@ -66,6 +69,10 @@ public class HomeActivity extends AppCompatActivity implements View.OnClickListe
                 break;
             case R.id.menuButton:
                 //TODO - Menu button logic
+                menuButton.setBackgroundColor(Color.RED);
+                getSupportFragmentManager().beginTransaction()
+                        .replace(R.id.fragmentLayout, menuFragment)
+                        .commit();
                 break;
             case R.id.accountButton:
                 getSupportFragmentManager().beginTransaction()

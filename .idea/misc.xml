@@ -4,14 +4,18 @@
     <option name="filePathToZoomLevelMap">
       <map>
         <entry key="..\:/Users/Vuk Antovic/Desktop/Android/OnlineShop/app/src/main/res/layout/activity_home.xml" value="0.358695652173913" />
+        <entry key="..\:/Users/Vuk Antovic/Desktop/Android/OnlineShop/app/src/main/res/layout/activity_item.xml" value="0.33" />
         <entry key="..\:/Users/Vuk Antovic/Desktop/Android/OnlineShop/app/src/main/res/layout/activity_main.xml" value="0.358695652173913" />
         <entry key="..\:/Users/Vuk Antovic/Desktop/Android/OnlineShop/app/src/main/res/layout/activity_password.xml" value="0.3385012919896641" />
         <entry key="..\:/Users/Vuk Antovic/Desktop/Android/OnlineShop/app/src/main/res/layout/activity_profile.xml" value="0.358695652173913" />
         <entry key="..\:/Users/Vuk Antovic/Desktop/Android/OnlineShop/app/src/main/res/layout/activity_purchase_history.xml" value="0.14722222222222223" />
+        <entry key="..\:/Users/Vuk Antovic/Desktop/Android/OnlineShop/app/src/main/res/layout/adapter_item.xml" value="0.358695652173913" />
         <entry key="..\:/Users/Vuk Antovic/Desktop/Android/OnlineShop/app/src/main/res/layout/fragment_account.xml" value="0.33" />
         <entry key="..\:/Users/Vuk Antovic/Desktop/Android/OnlineShop/app/src/main/res/layout/fragment_home.xml" value="0.358695652173913" />
         <entry key="..\:/Users/Vuk Antovic/Desktop/Android/OnlineShop/app/src/main/res/layout/fragment_login.xml" value="0.358695652173913" />
+        <entry key="..\:/Users/Vuk Antovic/Desktop/Android/OnlineShop/app/src/main/res/layout/fragment_menu.xml" value="0.358695652173913" />
         <entry key="..\:/Users/Vuk Antovic/Desktop/Android/OnlineShop/app/src/main/res/layout/fragment_register.xml" value="0.33" />
+        <entry key="..\:/Users/Vuk Antovic/Desktop/Android/OnlineShop/app/src/main/res/layout/row_item.xml" value="0.18802083333333333" />
       </map>
     </option>
   </component>
