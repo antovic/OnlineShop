@@ -1,2 +1,2 @@
 # OnlineShop
-Project for PiARS# antovic
+Project for PiARS
