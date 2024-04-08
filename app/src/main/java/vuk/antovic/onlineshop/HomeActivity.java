@@ -53,6 +53,7 @@ public class HomeActivity extends AppCompatActivity implements View.OnClickListe
         accountButton.setTextColor(Color.WHITE);
         bagButton.setEnabled(false);
     }
+    //cao
 
     @SuppressLint("NonConstantResourceId")
     @Override
