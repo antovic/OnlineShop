@@ -16,14 +16,12 @@ import org.w3c.dom.Text;
 public class HomeActivity extends AppCompatActivity implements View.OnClickListener {
 
     // Elements
-    LinearLayout welcomeLayout;
-    TextView welcomeTextView;
-    TextView usernameTextView;
     Button homeButton;
     Button menuButton;
     Button accountButton;
     Button bagButton;
     AccountFragment accountFragment;
+    HomeFragment homeFragment;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -32,15 +30,15 @@ public class HomeActivity extends AppCompatActivity implements View.OnClickListe
         Bundle bundle = getIntent().getExtras();
 
         // Init elements
-        welcomeLayout = findViewById(R.id.welcomeLayout);
-        welcomeTextView = findViewById(R.id.welcomeTextView);
-        usernameTextView = findViewById(R.id.usernameTextView);
-        usernameTextView.setText(bundle.getString("username","username"));
         homeButton = findViewById(R.id.homeButton);
         menuButton = findViewById(R.id.menuButton);
         accountButton = findViewById(R.id.accountButton);
         bagButton = findViewById(R.id.bagButton);
         accountFragment = AccountFragment.newInstance("AccountFragment", "AccountFragment");
+        homeFragment = HomeFragment.newInstance("HomeFragment", "HomeFragment");
+        getSupportFragmentManager().beginTransaction()
+                .replace(R.id.fragmentLayout, homeFragment)
+                .commit();
         // Set onclickListeners
         homeButton.setOnClickListener(this);
         menuButton.setOnClickListener(this);
@@ -61,18 +59,16 @@ public class HomeActivity extends AppCompatActivity implements View.OnClickListe
     public void onClick(View v) {
         switch (v.getId()){
             case R.id.homeButton:
-                welcomeLayout.setVisibility(View.VISIBLE);
-                Fragment fragment = getSupportFragmentManager().findFragmentByTag("fragment");
-                if(fragment != null)
-                    getSupportFragmentManager().beginTransaction().remove(fragment).commit();
+                getSupportFragmentManager().beginTransaction()
+                        .replace(R.id.fragmentLayout, homeFragment)
+                        .commit();
                 break;
             case R.id.menuButton:
                 //TODO - Menu button logic
                 break;
             case R.id.accountButton:
-                welcomeLayout.setVisibility(View.INVISIBLE);
                 getSupportFragmentManager().beginTransaction()
-                        .replace(R.id.fragmentLayout, accountFragment, "fragment")
+                        .replace(R.id.fragmentLayout, accountFragment)
                         .commit();
                 break;
             case R.id.bagButton:
@@ -87,7 +83,6 @@ public class HomeActivity extends AppCompatActivity implements View.OnClickListe
         Fragment fragment = getSupportFragmentManager().findFragmentByTag("fragment");
         if(fragment != null)
             getSupportFragmentManager().beginTransaction().remove(fragment).commit();
-        welcomeLayout.setVisibility(View.VISIBLE);
     }
 
 }
