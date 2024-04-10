@@ -9,6 +9,7 @@ import android.widget.BaseAdapter;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -67,6 +68,8 @@ public class ItemAdapter extends BaseAdapter {
         Button button;
     }
 
+    Toast toast = null;
+
     @SuppressLint("SetTextI18n")
     @Override
     public View getView(int i, View view, ViewGroup viewGroup) {
@@ -91,10 +94,13 @@ public class ItemAdapter extends BaseAdapter {
         viewHolder.nameTextView.setText(data.getName());
         String rsd = context.getString(R.string.rsd);
         viewHolder.costTextView.setText(String.valueOf(data.getCost()) + rsd);
+        ViewHolder finalViewHolder = viewHolder;
         viewHolder.button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                //Todo Button logic
+                if(toast != null) toast.cancel();
+                toast = Toast.makeText(context, "Item: '" + finalViewHolder.nameTextView.getText() + "' added to cart." , Toast.LENGTH_SHORT);
+                toast.show();
             }
         });
         return view;
