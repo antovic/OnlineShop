@@ -32,6 +32,13 @@ public class PurchaseAdapter extends BaseAdapter {
         notifyDataSetChanged();
     }
 
+    public void clear()
+    {
+        purchases.clear();
+        notifyDataSetChanged();
+    }
+
+
 
     @Override
     public int getCount() {
