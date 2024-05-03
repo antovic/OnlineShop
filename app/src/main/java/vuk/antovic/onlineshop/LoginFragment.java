@@ -11,6 +11,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.Toast;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -63,6 +64,11 @@ public class LoginFragment extends Fragment implements View.OnClickListener {
     EditText usernameEditText;
     EditText passwordEditText;
 
+    DbHelper dbHelper;
+    String DB = "OnlineShop.db";
+
+    Toast toast = null;
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
@@ -75,6 +81,8 @@ public class LoginFragment extends Fragment implements View.OnClickListener {
         usernameEditText = view.findViewById(R.id.loginUsername);
         passwordEditText = view.findViewById(R.id.loginPassword);
 
+        dbHelper = new DbHelper(getActivity(), DB, null, 1);
+
         return view;
     }
 
@@ -85,13 +93,20 @@ public class LoginFragment extends Fragment implements View.OnClickListener {
                 String username, password;
                 username = String.valueOf(usernameEditText.getText());
                 password = String.valueOf(passwordEditText.getText());
-                if(username.equals("admin") && password.equals("admin")){
-                    Intent intent = new Intent(getActivity(), HomeActivity.class);
-                    Bundle loginInfo = new Bundle();
-                    loginInfo.putString("username", username);
-                    intent.putExtras(loginInfo);
-                    startActivity(intent);
+
+                if(!dbHelper.validLogin(username,password))
+                {
+                    if(toast != null) toast.cancel();
+                    toast = Toast.makeText(getActivity(), "Wrong username or password.", Toast.LENGTH_SHORT);
+                    toast.show();
+                    break;
                 }
+                Intent intent = new Intent(getActivity(), HomeActivity.class);
+                Bundle loginInfo = new Bundle();
+                loginInfo.putString("username", username);
+                intent.putExtras(loginInfo);
+                startActivity(intent);
+
                 break;
         }
     }

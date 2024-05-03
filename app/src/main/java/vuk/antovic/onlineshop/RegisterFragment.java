@@ -10,6 +10,10 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.Toast;
+
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -63,6 +67,11 @@ public class RegisterFragment extends Fragment implements View.OnClickListener {
     EditText passwordEditText;
     Button submitButton;
 
+    DbHelper dbHelper;
+    String DB = "OnlineShop.db";
+
+    Toast toast = null;
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
@@ -75,24 +84,59 @@ public class RegisterFragment extends Fragment implements View.OnClickListener {
         submitButton = view.findViewById(R.id.registerSubmit);
 
         submitButton.setOnClickListener(this);
+        dbHelper = new DbHelper(getContext(), DB, null, 1);
 
         return view;
+    }
+
+    public static boolean isValidEmailAddress(String email) {
+        Pattern regexPattern = Pattern.compile("^(?=.{1,64}@)[A-Za-z0-9\\+_-]+(\\.[A-Za-z0-9\\+_-]+)*@"
+                + "[^-][A-Za-z0-9\\+-]+(\\.[A-Za-z0-9\\+-]+)*(\\.[A-Za-z]{2,})$");
+        Matcher matcher = regexPattern.matcher(email);
+        return matcher.matches();
+    }
+
+    public boolean validInput(String username, String email, String password)
+    {
+        boolean usernameClause = username.length() >= 6 && username.length() <= 20;
+        boolean emailClause = isValidEmailAddress(email);
+        boolean passwordClause = password.length() >= 6;
+        return usernameClause && emailClause && passwordClause;
     }
 
     @Override
     public void onClick(View view) {
         switch(view.getId()){
             case R.id.registerSubmit:
-                String username, email;
+                String username, email, password;
                 username = String.valueOf(usernameEditText.getText());
                 email = String.valueOf(emailEditText.getText());
+                password = String.valueOf(passwordEditText.getText());
 
-                Intent intent = new Intent(getActivity(), HomeActivity.class);
-                Bundle loginInfo = new Bundle();
-                loginInfo.putString("username", username);
-                loginInfo.putString("email", email);
-                intent.putExtras(loginInfo);
-                startActivity(intent);
+                if(validInput(username, email, password))
+                {
+                    if(dbHelper.checkUser(username))
+                    {
+                        if(toast != null) toast.cancel();
+                        toast = Toast.makeText(getActivity(), "Username already taken.", Toast.LENGTH_SHORT);
+                        toast.show();
+                        break;
+                    }
+                    User user = new User(username, email, password);
+                    dbHelper.insertUser(user);
+
+                    Intent intent = new Intent(getActivity(), HomeActivity.class);
+                    Bundle loginInfo = new Bundle();
+                    loginInfo.putString("username", username);
+                    intent.putExtras(loginInfo);
+                    startActivity(intent);
+                }
+                else
+                {
+                    if(toast != null) toast.cancel();
+                    toast = Toast.makeText(getActivity(), "Try again.", Toast.LENGTH_SHORT);
+                    toast.show();
+                }
                 break;
         }
     }
