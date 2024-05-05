@@ -16,6 +16,9 @@ public class ProfileActivity extends AppCompatActivity implements View.OnClickLi
     Button passwordButton;
     Button endSessionButton;
 
+    DbHelper dbHelper;
+    String DB = "OnlineShop.db";
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -26,12 +29,13 @@ public class ProfileActivity extends AppCompatActivity implements View.OnClickLi
         emailTextView = findViewById(R.id.emailTextViewProfile);
         passwordButton = findViewById(R.id.passwordButton);
         endSessionButton = findViewById(R.id.endSessionButton);
+        dbHelper = new DbHelper(this, DB, null, 1);
 
         // Setup account information
         Bundle bundle = getIntent().getExtras();
         String username = bundle.getString("username", "username");
         usernameTextView.setText(username);
-        String email = bundle.getString("email", "email");
+        String email = dbHelper.getEmail(username);
         emailTextView.setText(email);
 
         // Set on click listeners
@@ -47,6 +51,7 @@ public class ProfileActivity extends AppCompatActivity implements View.OnClickLi
         switch (view.getId()){
             case R.id.passwordButton:
                 intent = new Intent(this, PasswordActivity.class);
+                intent.putExtras(getIntent().getExtras());
                 startActivity(intent);
                 break;
             case R.id.endSessionButton:

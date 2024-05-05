@@ -110,5 +110,55 @@ public class DbHelper extends SQLiteOpenHelper {
         return found;
     }
 
+    public void updatePassword(String username, String password)
+    {
+
+        SQLiteDatabase db = getWritableDatabase();
+
+        ContentValues contentValues = new ContentValues();
+        contentValues.put(TABLE_USERS_PASSWORD, password);
+
+        db.update(
+                TABLE_USERS,
+                contentValues,
+                TABLE_USERS_USERNAME + " =? ",
+                new String[]{username}
+        );
+
+        db.close();
+    }
+
+    public String getEmail(String username)
+    {
+        SQLiteDatabase db = getReadableDatabase();
+        Cursor cursor = db.query(
+                TABLE_USERS,
+                new String[]{TABLE_USERS_EMAIL},
+                TABLE_USERS_USERNAME + " =? ",
+                new String[]{username},
+                null,
+                null,
+                null
+        );
+
+        cursor.moveToFirst();
+        String email = cursor.getString(cursor.getColumnIndexOrThrow(TABLE_USERS_EMAIL));
+
+        cursor.close();
+        db.close();
+        return email;
+    }
+
 
 }
+
+
+
+
+
+
+
+
+
+
+

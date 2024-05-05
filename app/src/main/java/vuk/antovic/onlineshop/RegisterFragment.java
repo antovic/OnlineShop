@@ -98,9 +98,9 @@ public class RegisterFragment extends Fragment implements View.OnClickListener {
 
     public boolean validInput(String username, String email, String password)
     {
-        boolean usernameClause = username.length() >= 6 && username.length() <= 20;
+        boolean usernameClause = username.length() >= 5 && username.length() <= 20;
         boolean emailClause = isValidEmailAddress(email);
-        boolean passwordClause = password.length() >= 6;
+        boolean passwordClause = password.length() >= 5;
         return usernameClause && emailClause && passwordClause;
     }
 
@@ -134,7 +134,7 @@ public class RegisterFragment extends Fragment implements View.OnClickListener {
                 else
                 {
                     if(toast != null) toast.cancel();
-                    toast = Toast.makeText(getActivity(), "Try again.", Toast.LENGTH_SHORT);
+                    toast = Toast.makeText(getActivity(), "Invalid input, try again.", Toast.LENGTH_SHORT);
                     toast.show();
                 }
                 break;
