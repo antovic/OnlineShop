@@ -1,6 +1,7 @@
 package vuk.antovic.onlineshop;
 
 import android.annotation.SuppressLint;
+import android.app.Activity;
 import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -20,11 +21,13 @@ import java.util.ArrayList;
 public class ItemAdapter extends BaseAdapter {
     private Context context;
     private ArrayList<ItemModel> list;
-
+    DbHelper dbHelper;
+    String DB = "OnlineShop.db";
 
     public ItemAdapter(Context context) {
         this.context = context;
         list = new ArrayList<>();
+        dbHelper = new DbHelper(context, DB, null, 1);
     }
 
     @Override
@@ -70,6 +73,7 @@ public class ItemAdapter extends BaseAdapter {
 
     Toast toast = null;
 
+
     @SuppressLint("SetTextI18n")
     @Override
     public View getView(int i, View view, ViewGroup viewGroup) {
@@ -93,14 +97,16 @@ public class ItemAdapter extends BaseAdapter {
         viewHolder.imageView.setImageDrawable(data.getImage());
         viewHolder.nameTextView.setText(data.getName());
         String rsd = context.getString(R.string.rsd);
-        viewHolder.costTextView.setText(String.valueOf(data.getCost()) + rsd);
+        viewHolder.costTextView.setText(String.valueOf(data.getPrice()) + rsd);
         ViewHolder finalViewHolder = viewHolder;
         viewHolder.button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                String username = ((Activity) context).getIntent().getExtras().getString("username", "username");
                 if(toast != null) toast.cancel();
-                toast = Toast.makeText(context, "Item: '" + finalViewHolder.nameTextView.getText() + "' added to cart." , Toast.LENGTH_SHORT);
+                toast = Toast.makeText(context, "Item: '" + finalViewHolder.nameTextView.getText() + "' added to " + username +"'s cart." , Toast.LENGTH_SHORT);
                 toast.show();
+                dbHelper.insertPurchase(data, username);
             }
         });
         return view;

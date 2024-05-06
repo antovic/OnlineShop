@@ -1,7 +1,7 @@
 package vuk.antovic.onlineshop;
 
 public class PurchaseModel {
-    enum State {DELIVERED, CANCELLED, WAITING_FOR_DELIVERY}
+    public enum State {DELIVERED, CANCELLED, WAITING_FOR_DELIVERY}
 
     State status;
     int price;

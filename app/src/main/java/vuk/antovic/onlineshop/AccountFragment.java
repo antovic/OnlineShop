@@ -78,7 +78,8 @@ public class AccountFragment extends Fragment implements View.OnClickListener {
         Intent intent;
         switch (view.getId()){
             case R.id.purchaseHistoryButton:
-                 intent = new Intent(getActivity(), PurchaseHistoryActivity.class);
+                intent = new Intent(getActivity(), PurchaseHistoryActivity.class);
+                intent.putExtras(getActivity().getIntent().getExtras());
                 startActivity(intent);
                 break;
             case R.id.myProfileButton:

@@ -5,12 +5,14 @@ import android.graphics.drawable.Drawable;
 public class ItemModel {
     private Drawable image;
     private String name;
-    private int cost;
+    private int price;
+    private String category;
 
-    public ItemModel(Drawable image, String name, int cost) {
+    public ItemModel(Drawable image, String name, int price, String category) {
         this.image = image;
         this.name = name;
-        this.cost = cost;
+        this.price = price;
+        this.category = category;
     }
 
     public Drawable getImage() {
@@ -29,11 +31,19 @@ public class ItemModel {
         this.name = name;
     }
 
-    public int getCost() {
-        return cost;
+    public int getPrice() {
+        return price;
     }
 
-    public void setCost(int cost) {
-        this.cost = cost;
+    public void setPrice(int cost) {
+        this.price = cost;
+    }
+
+    public String getCategory() {
+        return category;
+    }
+
+    public void setCategory(String category) {
+        this.category = category;
     }
 }
