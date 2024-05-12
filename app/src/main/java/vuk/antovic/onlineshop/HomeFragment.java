@@ -5,6 +5,7 @@ import androidx.fragment.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 /**
@@ -55,13 +56,23 @@ public class HomeFragment extends Fragment {
         }
     }
 
+    DbHelper dbHelper;
+    String DB = "OnlineShop.db";
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
+
+        dbHelper = new DbHelper(getContext(), DB, null, 1);
+
         View view =  inflater.inflate(R.layout.fragment_home, container, false);
         TextView welcomeUsername = view.findViewById(R.id.usernameTextView);
-        welcomeUsername.setText(getActivity().getIntent().getExtras().getString("username", "username"));
+        LinearLayout adminView = view.findViewById(R.id.adminView);
+        String username = getActivity().getIntent().getExtras().getString("username", "username");
+
+        adminView.setVisibility(dbHelper.isAdmin(username)?View.VISIBLE:View.INVISIBLE);
+        welcomeUsername.setText(username);
         return view;
     }
 }

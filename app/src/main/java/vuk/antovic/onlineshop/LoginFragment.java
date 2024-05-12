@@ -94,19 +94,37 @@ public class LoginFragment extends Fragment implements View.OnClickListener {
                 username = String.valueOf(usernameEditText.getText());
                 password = String.valueOf(passwordEditText.getText());
 
-                if(!dbHelper.validLogin(username,password))
-                {
-                    if(toast != null) toast.cancel();
-                    toast = Toast.makeText(getActivity(), "Wrong username or password.", Toast.LENGTH_SHORT);
-                    toast.show();
-                    break;
-                }
-                Intent intent = new Intent(getActivity(), HomeActivity.class);
-                Bundle loginInfo = new Bundle();
-                loginInfo.putString("username", username);
-                intent.putExtras(loginInfo);
-                startActivity(intent);
 
+                new Thread(new Runnable() {
+                    @Override
+                    public void run() {
+                        try
+                        {
+                            if(!dbHelper.validLogin(username,password))
+                            {
+                                getActivity().runOnUiThread(new Runnable() {
+                                    @Override
+                                    public void run() {
+                                        if(toast != null) toast.cancel();
+                                        toast = Toast.makeText(getActivity(), "Wrong username or password.", Toast.LENGTH_SHORT);
+                                        toast.show();
+
+                                    }
+                                });
+                                Thread.currentThread().stop();
+                            }
+                            Intent intent = new Intent(getActivity(), HomeActivity.class);
+                            Bundle loginInfo = new Bundle();
+                            loginInfo.putString("username", username);
+                            intent.putExtras(loginInfo);
+                            startActivity(intent);
+                        }
+                        catch (Exception e)
+                        {
+                            e.printStackTrace();
+                        }
+                    }
+                }).start();
                 break;
         }
     }

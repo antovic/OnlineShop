@@ -5,12 +5,18 @@ import android.os.Bundle;
 
 import androidx.fragment.app.Fragment;
 
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.Toast;
+
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -66,9 +72,11 @@ public class RegisterFragment extends Fragment implements View.OnClickListener {
     EditText emailEditText;
     EditText passwordEditText;
     Button submitButton;
+    CheckBox isAdminCheckBox;
 
     DbHelper dbHelper;
     String DB = "OnlineShop.db";
+    HTTPHelper httpHelper;
 
     Toast toast = null;
 
@@ -82,8 +90,9 @@ public class RegisterFragment extends Fragment implements View.OnClickListener {
         emailEditText = view.findViewById(R.id.registerEmail);
         passwordEditText = view.findViewById(R.id.registerPassword);
         submitButton = view.findViewById(R.id.registerSubmit);
-
+        isAdminCheckBox = view.findViewById(R.id.isAdminCheckBox);
         submitButton.setOnClickListener(this);
+        httpHelper = new HTTPHelper();
         dbHelper = new DbHelper(getContext(), DB, null, 1);
 
         return view;
@@ -113,30 +122,60 @@ public class RegisterFragment extends Fragment implements View.OnClickListener {
                 email = String.valueOf(emailEditText.getText());
                 password = String.valueOf(passwordEditText.getText());
 
-                if(validInput(username, email, password))
+                if(!validInput(username, email, password))
                 {
-                    if(dbHelper.checkUser(username))
-                    {
-                        if(toast != null) toast.cancel();
-                        toast = Toast.makeText(getActivity(), "Username already taken.", Toast.LENGTH_SHORT);
-                        toast.show();
-                        break;
-                    }
-                    User user = new User(username, email, password);
-                    dbHelper.insertUser(user);
-
-                    Intent intent = new Intent(getActivity(), HomeActivity.class);
-                    Bundle loginInfo = new Bundle();
-                    loginInfo.putString("username", username);
-                    intent.putExtras(loginInfo);
-                    startActivity(intent);
-                }
-                else
-                {
-                    if(toast != null) toast.cancel();
+                    if (toast != null) toast.cancel();
                     toast = Toast.makeText(getActivity(), "Invalid input, try again.", Toast.LENGTH_SHORT);
                     toast.show();
+                    break;
                 }
+                boolean isAdmin = isAdminCheckBox.isChecked();
+                final String[] id = new String[1];
+                new Thread(new Runnable() {
+                    @Override
+                    public void run() {
+                        try
+                        {
+                            JSONObject jsonObject = httpHelper.registerUser(username, email, password, isAdmin);
+                            if(jsonObject == null)
+                            {
+                                try {
+                                    getActivity().runOnUiThread(new Runnable() {
+                                        public void run() {
+                                            Toast.makeText(getActivity(), "Failed to register", Toast.LENGTH_SHORT).show();
+                                        }
+                                    });
+                                } catch (Exception e) {
+                                    e.printStackTrace();
+                                }
+                                Thread.currentThread().stop();
+                            }
+                            try {
+                                getActivity().runOnUiThread(new Runnable() {
+                                    public void run() {
+                                        Toast.makeText(getActivity(), "Registered successfully", Toast.LENGTH_SHORT).show();
+                                        try {
+                                            id[0] = jsonObject.getString("_id");
+                                        } catch (JSONException e) {
+                                            e.printStackTrace();
+                                        }
+                                    }
+                                });
+                            } catch (Exception e) {
+                                e.printStackTrace();
+                            }
+                            dbHelper.insertUser(new User(username, email, password), isAdmin, id[0]);
+                            Intent intent = new Intent(getActivity(), HomeActivity.class);
+                            Bundle loginInfo = new Bundle();
+                            loginInfo.putString("username", username);
+                            intent.putExtras(loginInfo);
+                            startActivity(intent);
+                        }catch (Exception e)
+                        {
+                            e.printStackTrace();
+                        }
+                    }
+                }).start();
                 break;
         }
     }

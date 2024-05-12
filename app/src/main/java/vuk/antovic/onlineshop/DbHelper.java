@@ -25,6 +25,7 @@ public class DbHelper extends SQLiteOpenHelper {
     String TABLE_USERS_USERNAME = "username";
     String TABLE_USERS_PASSWORD = "password";
     String TABLE_USERS_EMAIL = "email";
+    String TABLE_USERS_ISADMIN = "isAdmin";
     String TABLE_USERS_ID = "id";
 
     String TABLE_ITEMS = "items";
@@ -52,7 +53,8 @@ public class DbHelper extends SQLiteOpenHelper {
                 " (" + TABLE_USERS_USERNAME + " text, " +
                 TABLE_USERS_PASSWORD + " text, " +
                 TABLE_USERS_EMAIL + " text, " +
-                TABLE_USERS_ID + " integer primary key autoincrement);");
+                TABLE_USERS_ISADMIN + " integer, " +
+                TABLE_USERS_ID + " text);");
         db.execSQL("create table " + TABLE_ITEMS + " ( " +
                 TABLE_ITEMS_NAME + " text, " +
                 TABLE_ITEMS_PRICE + " text, "+
@@ -72,7 +74,7 @@ public class DbHelper extends SQLiteOpenHelper {
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
     }
 
-    public void insertUser(User user)
+    public void insertUser(User user, boolean isAdmin, String id)
     {
         SQLiteDatabase db = getWritableDatabase();
         ContentValues contentValues = new ContentValues();
@@ -80,6 +82,9 @@ public class DbHelper extends SQLiteOpenHelper {
         contentValues.put(TABLE_USERS_USERNAME, user.getUsername());
         contentValues.put(TABLE_USERS_EMAIL, user.getEmail());
         contentValues.put(TABLE_USERS_PASSWORD, user.getPassword());
+        int is_admin = isAdmin ? 1 : 0;
+        contentValues.put(TABLE_USERS_ISADMIN, is_admin);
+        contentValues.put(TABLE_USERS_ID, id);
 
         db.insert(TABLE_USERS, null, contentValues);
         close();
@@ -161,6 +166,27 @@ public class DbHelper extends SQLiteOpenHelper {
         cursor.close();
         db.close();
         return email;
+    }
+
+    public boolean isAdmin(String username)
+    {
+        SQLiteDatabase db = getReadableDatabase();
+        Cursor cursor = db.query(
+                TABLE_USERS,
+                new String[]{TABLE_USERS_ISADMIN},
+                TABLE_USERS_USERNAME + " =? ",
+                new String[]{username},
+                null,
+                null,
+                null
+        );
+
+        cursor.moveToFirst();
+        int is_admin = cursor.getInt(cursor.getColumnIndexOrThrow(TABLE_USERS_ISADMIN));
+
+        cursor.close();
+        db.close();
+        return is_admin == 1;
     }
 
 

@@ -64,8 +64,13 @@
             android:layout_height="wrap_content"
             android:inputType="textPassword"
             android:id="@+id/registerPassword"/>
-
     </LinearLayout>
+
+    <CheckBox
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="admin"
+        android:id="@+id/isAdminCheckBox"/>
 
     <Button
         android:layout_width="wrap_content"
