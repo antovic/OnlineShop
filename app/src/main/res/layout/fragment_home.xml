@@ -32,50 +32,72 @@
         <LinearLayout
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:orientation="vertical"
+            android:orientation="horizontal"
             android:layout_gravity="left"
             android:id="@+id/adminView">
-        <TextView
-            android:layout_width="wrap_content"
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_weight="1"
             android:layout_height="wrap_content"
-            android:text="@string/add_new_item"
-            android:textSize="28sp"
-            />
+            android:orientation="vertical">
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/add_new_item"
+                android:textSize="28sp" />
 
-        <EditText
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:hint="@string/item_name"
-            android:id="@+id/itemNameEditText"
-            />
+            <EditText
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:hint="@string/item_name"
+                android:id="@+id/itemNameEditText" />
 
-        <EditText
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:hint="@string/item_price"
-            android:id="@+id/itemPriceEditText"
-            />
+            <EditText
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:hint="@string/item_price"
+                android:id="@+id/itemPriceEditText" />
 
-        <EditText
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:hint="@string/item_category"
-            android:id="@+id/itemCategoryEditText"
-            />
+            <EditText
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:hint="@string/item_category"
+                android:id="@+id/itemCategoryEditText" />
 
-        <EditText
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:hint="Item Image"
-            android:id="@+id/itemImageEditText"
-            />
+            <EditText
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:hint="Item Image"
+                android:id="@+id/itemImageEditText" />
 
-        <Button
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@string/add"
-            android:id="@+id/addItemButton"/>
+            <Button
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/add"
+                android:id="@+id/addItemButton"/>
+        </LinearLayout>
 
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_weight="1"
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/add_new_category"
+                    android:textSize="28sp" />
+                <EditText
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:hint="@string/category_name"
+                    android:id="@+id/categoryNameEditText" />
+                <Button
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/add"
+                    android:id="@+id/addCategoryButton"/>
+            </LinearLayout>
 
         </LinearLayout>
 

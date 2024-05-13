@@ -34,4 +34,6 @@
     <string name="item_name">Item Name</string>
     <string name="item_price">Item Price</string>
     <string name="item_category">Item Category</string>
+    <string name="add_new_category">Add new Category:</string>
+    <string name="category_name">Category name</string>
 </resources>

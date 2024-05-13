@@ -290,5 +290,80 @@ public class HTTPHelper {
     }
 
 
+    /*HTTP post*/
+    public boolean createCategory(String categoryName) throws IOException, JSONException {
+        String urlString = BASE_URL + "/category";
+
+        JSONObject jsonObject = new JSONObject();
+        jsonObject.put("name", categoryName);
+
+
+        HttpURLConnection urlConnection = null;
+        java.net.URL url = new URL(urlString);
+        urlConnection = (HttpURLConnection) url.openConnection();
+        urlConnection.setRequestMethod("POST");
+        urlConnection.setRequestProperty("Content-Type", "application/json;charset=UTF-8");
+        urlConnection.setRequestProperty("Accept","application/json");
+        /*needed when used POST or PUT methods*/
+        urlConnection.setDoOutput(true);
+        urlConnection.setDoInput(true);
+        try {
+            urlConnection.connect();
+        } catch (IOException e) {
+            return false;
+        }
+        DataOutputStream os = new DataOutputStream(urlConnection.getOutputStream());
+        /*write json object*/
+        os.writeBytes(jsonObject.toString());
+        os.flush();
+        os.close();
+        int responseCode =  urlConnection.getResponseCode();
+        Log.i("STATUS", String.valueOf(urlConnection.getResponseCode()));
+        Log.i("MSG" , urlConnection.getResponseMessage());
+        urlConnection.disconnect();
+        return (responseCode==SUCCESS);
+    }
+
+
+    /*HTTP post*/
+    public boolean createItem(String name, String price, String category, String imageName ) throws IOException, JSONException {
+        String urlString = BASE_URL + "/item";
+
+        JSONObject jsonObject = new JSONObject();
+        jsonObject.put("name", name);
+        jsonObject.put("price", price);
+        jsonObject.put("category", category);
+        jsonObject.put("imageName", imageName);
+
+
+        HttpURLConnection urlConnection = null;
+        java.net.URL url = new URL(urlString);
+        urlConnection = (HttpURLConnection) url.openConnection();
+        urlConnection.setRequestMethod("POST");
+        urlConnection.setRequestProperty("Content-Type", "application/json;charset=UTF-8");
+        urlConnection.setRequestProperty("Accept","application/json");
+        /*needed when used POST or PUT methods*/
+        urlConnection.setDoOutput(true);
+        urlConnection.setDoInput(true);
+        try {
+            urlConnection.connect();
+        } catch (IOException e) {
+            return false;
+        }
+        DataOutputStream os = new DataOutputStream(urlConnection.getOutputStream());
+        /*write json object*/
+        os.writeBytes(jsonObject.toString());
+        os.flush();
+        os.close();
+        int responseCode =  urlConnection.getResponseCode();
+        Log.i("STATUS", String.valueOf(urlConnection.getResponseCode()));
+        Log.i("MSG" , urlConnection.getResponseMessage());
+        urlConnection.disconnect();
+        return (responseCode==SUCCESS);
+    }
+
+
+
+
 
 }

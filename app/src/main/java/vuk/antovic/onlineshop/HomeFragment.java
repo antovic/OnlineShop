@@ -5,8 +5,11 @@ import androidx.fragment.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
+import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -14,7 +17,7 @@ import android.widget.TextView;
  * create an instance of this fragment.
  *
  */
-public class HomeFragment extends Fragment {
+public class HomeFragment extends Fragment implements View.OnClickListener {
 
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
@@ -58,6 +61,10 @@ public class HomeFragment extends Fragment {
 
     DbHelper dbHelper;
     String DB = "OnlineShop.db";
+    HTTPHelper httpHelper;
+    EditText categoryNameEditText;
+    EditText itemNameEditText, itemPriceEditText, itemCategoryEditText, itemImageEditText;
+
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -71,8 +78,62 @@ public class HomeFragment extends Fragment {
         LinearLayout adminView = view.findViewById(R.id.adminView);
         String username = getActivity().getIntent().getExtras().getString("username", "username");
 
+        httpHelper = new HTTPHelper();
+        Button addItemButton = view.findViewById(R.id.addItemButton);
+        Button addCategoryButton = view.findViewById(R.id.addCategoryButton);
+        addCategoryButton.setOnClickListener(this);
+        addItemButton.setOnClickListener(this);
+        categoryNameEditText = view.findViewById(R.id.categoryNameEditText);
+        itemNameEditText = view.findViewById(R.id.itemNameEditText);
+        itemPriceEditText = view.findViewById(R.id.itemPriceEditText);
+        itemCategoryEditText = view.findViewById(R.id.itemCategoryEditText);
+        itemImageEditText = view.findViewById(R.id.itemImageEditText);
         adminView.setVisibility(dbHelper.isAdmin(username)?View.VISIBLE:View.INVISIBLE);
         welcomeUsername.setText(username);
         return view;
+    }
+
+    @Override
+    public void onClick(View v) {
+        switch(v.getId())
+        {
+            case R.id.addCategoryButton:
+                new Thread(new Runnable() {
+                    @Override
+                    public void run() {
+                        try
+                        {
+                            httpHelper.createCategory(String.valueOf(categoryNameEditText.getText()));
+                        }
+                        catch (Exception e)
+                        {
+                            e.printStackTrace();
+                        }
+                    }
+                }).start();
+
+                break;
+
+            case R.id.addItemButton:
+                new Thread(new Runnable() {
+                    @Override
+                    public void run() {
+                        try
+                        {
+                            httpHelper.createItem(String.valueOf(itemNameEditText.getText()),
+                                    String.valueOf(itemPriceEditText.getText()),
+                                    String.valueOf(itemCategoryEditText.getText()),
+                                    String.valueOf(itemImageEditText.getText())
+                                    );
+                        }
+                        catch (Exception e)
+                        {
+                            e.printStackTrace();
+                        }
+                    }
+                }).start();
+
+                break;
+        }
     }
 }
