@@ -6,6 +6,7 @@ import android.os.Bundle;
 
 import androidx.fragment.app.Fragment;
 
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -69,6 +70,8 @@ public class LoginFragment extends Fragment implements View.OnClickListener {
 
     Toast toast = null;
 
+    HTTPHelper httpHelper;
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
@@ -82,7 +85,7 @@ public class LoginFragment extends Fragment implements View.OnClickListener {
         passwordEditText = view.findViewById(R.id.loginPassword);
 
         dbHelper = new DbHelper(getActivity(), DB, null, 1);
-
+        httpHelper = new HTTPHelper();
         return view;
     }
 
@@ -100,8 +103,9 @@ public class LoginFragment extends Fragment implements View.OnClickListener {
                     public void run() {
                         try
                         {
-                            if(!dbHelper.validLogin(username,password))
+                            if(!httpHelper.loginUser(username,password))
                             {
+                                Log.d("sale", "0/1");
                                 getActivity().runOnUiThread(new Runnable() {
                                     @Override
                                     public void run() {

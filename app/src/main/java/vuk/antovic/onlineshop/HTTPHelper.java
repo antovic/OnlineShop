@@ -218,12 +218,77 @@ public class HTTPHelper {
         os.writeBytes(jsonObject.toString());
         os.flush();
         os.close();
+
+
+        int responseCode =  urlConnection.getResponseCode();
+
+
+        Log.i("STATUS", String.valueOf(urlConnection.getResponseCode()));
+        Log.i("MSG" , urlConnection.getResponseMessage());
+        urlConnection.disconnect();
+        return (responseCode==SUCCESS);
+    }
+
+
+    public boolean changePassword(String username, String oldPassword, String newPassword) throws IOException, JSONException {
+        String urlString = BASE_URL + "/password";
+        HttpURLConnection urlConnection = null;
+        java.net.URL url = new URL(urlString);
+        urlConnection = (HttpURLConnection) url.openConnection();
+        urlConnection.setRequestMethod("PUT");
+        urlConnection.setRequestProperty("Content-Type", "application/json;charset=UTF-8");
+        urlConnection.setRequestProperty("Accept","application/json");
+        /*needed when used POST or PUT methods*/
+
+        JSONObject jsonObject = new JSONObject();
+        jsonObject.put("username", username);
+        jsonObject.put("oldPassword", oldPassword);
+        jsonObject.put("newPassword", newPassword);
+
+        urlConnection.setDoOutput(true);
+        urlConnection.setDoInput(true);
+        try {
+            urlConnection.connect();
+        } catch (IOException e) {
+            return false;
+        }
+        DataOutputStream os = new DataOutputStream(urlConnection.getOutputStream());
+        /*write json object*/
+        os.writeBytes(jsonObject.toString());
+        os.flush();
+        os.close();
+
+
+        // Check the error stream first, if this is null then there have been no issues with the request
+        InputStream inputStream = urlConnection.getErrorStream();
+        if (inputStream == null)
+            inputStream = urlConnection.getInputStream();
+
+        // Read everything from our stream
+        BufferedReader responseReader = new BufferedReader(new InputStreamReader(inputStream, "UTF-8"));
+        String inputLine;
+        StringBuffer response = new StringBuffer();
+
+        while ((inputLine = responseReader.readLine()) != null) {
+            response.append(inputLine);
+        }
+        responseReader.close();
+
+        String jsonString = response.toString();
+
+
+        Log.d("sale", jsonString);
+
+        JSONObject responseObject = new JSONObject(jsonString);
+
+
         int responseCode =  urlConnection.getResponseCode();
         Log.i("STATUS", String.valueOf(urlConnection.getResponseCode()));
         Log.i("MSG" , urlConnection.getResponseMessage());
         urlConnection.disconnect();
         return (responseCode==SUCCESS);
     }
+
 
 
 }
