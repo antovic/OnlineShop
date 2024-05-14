@@ -138,8 +138,15 @@ public class HomeFragment extends Fragment implements View.OnClickListener {
                     public void run() {
                         try
                         {
+                            int price;
+                            try {
+                                price = Integer.parseInt(itemPriceEditText.getText().toString());
+                            }catch (Exception e)
+                            {
+                                price = 0;
+                            }
                             if(httpHelper.createItem(String.valueOf(itemNameEditText.getText()),
-                                    String.valueOf(itemPriceEditText.getText()),
+                                    String.valueOf(price),
                                     String.valueOf(itemCategoryEditText.getText()),
                                     String.valueOf(itemImageEditText.getText())
                                     ))
