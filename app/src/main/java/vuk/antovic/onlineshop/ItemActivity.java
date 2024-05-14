@@ -60,7 +60,7 @@ public class ItemActivity extends AppCompatActivity implements View.OnClickListe
         new Thread(new Runnable() {
             public void run() {
                 try {
-                    JSONArray allItems = httpHelper.getItemsByCategory(category);
+                    JSONArray allItems = httpHelper.getItemByCategory(category);
                     try {
                         runOnUiThread(new Runnable() {
                             public void run() {

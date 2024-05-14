@@ -103,9 +103,8 @@ public class LoginFragment extends Fragment implements View.OnClickListener {
                     public void run() {
                         try
                         {
-                            if(!httpHelper.loginUser(username,password))
+                            if(!httpHelper.login(username,password))
                             {
-                                Log.d("sale", "0/1");
                                 getActivity().runOnUiThread(new Runnable() {
                                     @Override
                                     public void run() {

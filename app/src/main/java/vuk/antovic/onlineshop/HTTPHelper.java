@@ -130,7 +130,7 @@ public class HTTPHelper {
         return (responseCode==SUCCESS);
     }
 
-    public JSONObject registerUser(String username, String email, String password, boolean isAdmin) throws IOException, JSONException{
+    public JSONObject createUser(String username, String email, String password, boolean isAdmin) throws IOException, JSONException{
         String urlString = BASE_URL + "/users";
         JSONObject jsonObject = new JSONObject();
         jsonObject.put("username", username);
@@ -191,8 +191,8 @@ public class HTTPHelper {
     }
 
 
-    /*HTTP post*/
-    public boolean loginUser(String username, String password) throws IOException, JSONException {
+
+    public boolean login(String username, String password) throws IOException, JSONException {
         String urlString = BASE_URL + "/login";
         HttpURLConnection urlConnection = null;
         java.net.URL url = new URL(urlString);
@@ -273,15 +273,8 @@ public class HTTPHelper {
             response.append(inputLine);
         }
         responseReader.close();
-
         String jsonString = response.toString();
-
-
-        Log.d("sale", jsonString);
-
         JSONObject responseObject = new JSONObject(jsonString);
-
-
         int responseCode =  urlConnection.getResponseCode();
         Log.i("STATUS", String.valueOf(urlConnection.getResponseCode()));
         Log.i("MSG" , urlConnection.getResponseMessage());
@@ -290,12 +283,12 @@ public class HTTPHelper {
     }
 
 
-    /*HTTP post*/
-    public boolean createCategory(String categoryName) throws IOException, JSONException {
+
+    public boolean createCategory(String name) throws IOException, JSONException {
         String urlString = BASE_URL + "/category";
 
         JSONObject jsonObject = new JSONObject();
-        jsonObject.put("name", categoryName);
+        jsonObject.put("name", name);
 
 
         HttpURLConnection urlConnection = null;
@@ -325,7 +318,7 @@ public class HTTPHelper {
     }
 
 
-    /*HTTP post*/
+
     public boolean createItem(String name, String price, String category, String imageName ) throws IOException, JSONException {
         String urlString = BASE_URL + "/item";
 
@@ -362,7 +355,7 @@ public class HTTPHelper {
         return (responseCode==SUCCESS);
     }
 
-    public JSONArray getAllItems() throws IOException, JSONException {
+    public JSONArray getItems() throws IOException, JSONException {
         String urlString = BASE_URL + "/item";
         HttpURLConnection urlConnection = null;
         java.net.URL url = new URL(urlString);
@@ -391,7 +384,7 @@ public class HTTPHelper {
         return responseCode == SUCCESS ? new JSONArray(jsonString) : null;
     }
 
-    public JSONArray getItemsByCategory(String category) throws IOException, JSONException {
+    public JSONArray getItemByCategory(String category) throws IOException, JSONException {
         String urlString = BASE_URL + "/item/" + category;
         HttpURLConnection urlConnection = null;
         java.net.URL url = new URL(urlString);

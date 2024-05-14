@@ -97,7 +97,7 @@ public class MenuFragment extends Fragment implements  AdapterView.OnItemClickLi
         new Thread(new Runnable() {
             public void run() {
                 try {
-                    JSONArray items = httpHelper.getAllItems();
+                    JSONArray items = httpHelper.getItems();
                     try {
                         getActivity().runOnUiThread(new Runnable() {
                             public void run() {

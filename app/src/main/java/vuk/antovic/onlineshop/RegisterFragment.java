@@ -136,7 +136,7 @@ public class RegisterFragment extends Fragment implements View.OnClickListener {
                     public void run() {
                         try
                         {
-                            JSONObject jsonObject = httpHelper.registerUser(username, email, password, isAdmin);
+                            JSONObject jsonObject = httpHelper.createUser(username, email, password, isAdmin);
                             if(jsonObject == null)
                             {
                                 try {
