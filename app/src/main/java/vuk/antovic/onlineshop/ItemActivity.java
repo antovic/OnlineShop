@@ -79,6 +79,10 @@ public class ItemActivity extends AppCompatActivity implements View.OnClickListe
                                             e.printStackTrace();
                                         }
                                     }
+                                    if(items == null)
+                                    {
+                                        Thread.currentThread().stop();
+                                    }
                                     for(ItemModel item: items) {
                                         adapter.add(item);
                                     }

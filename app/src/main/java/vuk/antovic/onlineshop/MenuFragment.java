@@ -106,14 +106,18 @@ public class MenuFragment extends Fragment implements  AdapterView.OnItemClickLi
                                     for(int i = 0; i < items.length(); i++){
                                         try {
                                             JSONObject item = items.getJSONObject(i);
-                                            String ctg = item.getString("category");
-                                            if(!categories.contains(ctg))
+                                            String category = item.getString("category");
+                                            if(!categories.contains(category))
                                             {
-                                                categories.add(ctg);
+                                                categories.add(category);
                                             }
                                         } catch (JSONException e) {
                                             e.printStackTrace();
                                         }
+                                    }
+                                    if(categories == null)
+                                    {
+                                        Thread.currentThread().stop();
                                     }
                                     for(String category: categories) {
                                         adapter.add(category);
