@@ -4,11 +4,20 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.content.ContextCompat;
 
 import android.annotation.SuppressLint;
+import android.content.Context;
+import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ListView;
 import android.widget.TextView;
+
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.io.IOException;
+import java.util.ArrayList;
 
 public class ItemActivity extends AppCompatActivity implements View.OnClickListener {
     String category;
@@ -20,7 +29,7 @@ public class ItemActivity extends AppCompatActivity implements View.OnClickListe
     ItemAdapter adapter;
     DbHelper dbHelper;
     String DB = "OnlineShop.db";
-
+    HTTPHelper httpHelper;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -40,14 +49,52 @@ public class ItemActivity extends AppCompatActivity implements View.OnClickListe
         button = findViewById(R.id.buttonBack);
         button.setOnClickListener(this);
 
-        dbHelper = new DbHelper(this, DB, null, 1);
-
-        ItemModel[] items = dbHelper.getItemsByCategory(this, category);
-        for(ItemModel item : items)
-        {
-            adapter.add(item);
-        }
-
+//        dbHelper = new DbHelper(this, DB, null, 1);
+//
+//        ItemModel[] items = dbHelper.getItemsByCategory(this, category);
+//        for(ItemModel item : items)
+//        {
+//            adapter.add(item);
+//        }
+        httpHelper = new HTTPHelper();
+        new Thread(new Runnable() {
+            public void run() {
+                try {
+                    JSONArray allItems = httpHelper.getItemsByCategory(category);
+                    try {
+                        runOnUiThread(new Runnable() {
+                            public void run() {
+                                if(allItems != null){
+                                    ArrayList<ItemModel> items = new ArrayList<ItemModel>();
+                                    for(int i = 0; i < allItems.length(); i++){
+                                        try {
+                                            JSONObject item = allItems.getJSONObject(i);
+                                            String name = item.getString("name");
+                                            String price = item.getString("price");
+                                            String category = item.getString("category");
+                                            String imageName = item.getString("imageName");
+                                            ItemModel foundItem = new ItemModel(getDrawableFromImageName(ItemActivity.this, imageName), name, Integer.valueOf(price), category);
+                                            items.add(foundItem);
+                                        } catch (JSONException e) {
+                                            e.printStackTrace();
+                                        }
+                                    }
+                                    for(ItemModel item: items) {
+                                        adapter.add(item);
+                                    }
+                                }
+                            }
+                        });
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
+                } catch (IOException e) {
+                    e.printStackTrace();
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+            }
+        }).start();
     }
 
     @Override
@@ -57,6 +104,16 @@ public class ItemActivity extends AppCompatActivity implements View.OnClickListe
             case R.id.buttonBack:
                 finish();
                 break;
+        }
+    }
+
+    public static Drawable getDrawableFromImageName(Context context, String imageName) {
+        int resourceId = context.getResources().getIdentifier(imageName, "drawable", context.getPackageName());
+        if (resourceId != 0) {
+            return context.getResources().getDrawable(resourceId, null);
+        } else {
+            // Handle the case when the resource is not found
+            return null;
         }
     }
 }

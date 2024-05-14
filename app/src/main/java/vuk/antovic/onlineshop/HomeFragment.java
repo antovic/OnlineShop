@@ -103,7 +103,25 @@ public class HomeFragment extends Fragment implements View.OnClickListener {
                     public void run() {
                         try
                         {
-                            httpHelper.createCategory(String.valueOf(categoryNameEditText.getText()));
+                            if(httpHelper.createCategory(String.valueOf(categoryNameEditText.getText())))
+                            {
+                                getActivity().runOnUiThread(new Runnable() {
+                                    @Override
+                                    public void run() {
+                                        Toast.makeText(getActivity(), "Category created", Toast.LENGTH_SHORT).show();
+                                        categoryNameEditText.setText("");
+                                    }
+                                });
+                            }
+                            else
+                            {
+                                getActivity().runOnUiThread(new Runnable() {
+                                    @Override
+                                    public void run() {
+                                        Toast.makeText(getActivity(), "Failed to create a category", Toast.LENGTH_SHORT).show();
+                                    }
+                                });
+                            }
                         }
                         catch (Exception e)
                         {
@@ -120,11 +138,34 @@ public class HomeFragment extends Fragment implements View.OnClickListener {
                     public void run() {
                         try
                         {
-                            httpHelper.createItem(String.valueOf(itemNameEditText.getText()),
+                            if(httpHelper.createItem(String.valueOf(itemNameEditText.getText()),
                                     String.valueOf(itemPriceEditText.getText()),
                                     String.valueOf(itemCategoryEditText.getText()),
                                     String.valueOf(itemImageEditText.getText())
-                                    );
+                                    ))
+                            {
+                                getActivity().runOnUiThread(new Runnable() {
+                                    @Override
+                                    public void run() {
+                                        Toast.makeText(getActivity(), "Item created", Toast.LENGTH_SHORT).show();
+                                        itemNameEditText.setText("");
+                                        itemPriceEditText.setText("");
+                                        itemCategoryEditText.setText("");
+                                        itemImageEditText.setText("");
+                                    }
+                                });
+                            }
+                            else
+                            {
+                                getActivity().runOnUiThread(new Runnable() {
+                                    @Override
+                                    public void run() {
+                                        Toast.makeText(getActivity(), "Failed to create an item", Toast.LENGTH_SHORT).show();
+                                    }
+                                });
+                            }
+
+
                         }
                         catch (Exception e)
                         {

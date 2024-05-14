@@ -14,6 +14,13 @@ import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.ListView;
 
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.io.IOException;
+import java.util.ArrayList;
+
 /**
  * A simple {@link Fragment} subclass.
  * Use the {@link MenuFragment#newInstance} factory method to
@@ -65,6 +72,7 @@ public class MenuFragment extends Fragment implements  AdapterView.OnItemClickLi
     ArrayAdapter<String> adapter;
     DbHelper dbHelper;
     String DB = "OnlineShop.db";
+    HTTPHelper httpHelper;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -75,16 +83,54 @@ public class MenuFragment extends Fragment implements  AdapterView.OnItemClickLi
         adapter = new ArrayAdapter<String>(getActivity(), android.R.layout.simple_list_item_1);
         listView.setAdapter(adapter);
         listView.setOnItemClickListener(this);
-        dbHelper = new DbHelper(getContext(), DB, null, 1);
-        String categories[] = dbHelper.getCategories();
-        if(categories == null || categories.length == 0)
-        {
-            addItems();
-            categories = dbHelper.getCategories();
-        }
-        for (String category : categories) {
-            adapter.add(category);
-        }
+//        dbHelper = new DbHelper(getContext(), DB, null, 1);
+//        String categories[] = dbHelper.getCategories();
+//        if(categories == null || categories.length == 0)
+//        {
+//            addItems();
+//            categories = dbHelper.getCategories();
+//        }
+//        for (String category : categories) {
+//            adapter.add(category);
+//        }
+        httpHelper = new HTTPHelper();
+        new Thread(new Runnable() {
+            public void run() {
+                try {
+                    JSONArray items = httpHelper.getAllItems();
+                    try {
+                        getActivity().runOnUiThread(new Runnable() {
+                            public void run() {
+                                if(items != null){
+                                    ArrayList<String> categories = new ArrayList<String>();
+                                    for(int i = 0; i < items.length(); i++){
+                                        try {
+                                            JSONObject item = items.getJSONObject(i);
+                                            String ctg = item.getString("category");
+                                            if(!categories.contains(ctg))
+                                            {
+                                                categories.add(ctg);
+                                            }
+                                        } catch (JSONException e) {
+                                            e.printStackTrace();
+                                        }
+                                    }
+                                    for(String category: categories) {
+                                        adapter.add(category);
+                                    }
+                                }
+                            }
+                        });
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
+                } catch (IOException e) {
+                    e.printStackTrace();
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+            }
+        }).start();
         return view;
     }
 
