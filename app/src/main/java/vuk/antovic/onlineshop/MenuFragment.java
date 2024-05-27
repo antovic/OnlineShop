@@ -1,11 +1,14 @@
 package vuk.antovic.onlineshop;
 
 import android.annotation.SuppressLint;
+import android.content.Context;
 import android.content.Intent;
+import android.content.ServiceConnection;
 import android.os.Bundle;
 
 import androidx.fragment.app.Fragment;
 
+import android.os.RemoteException;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -73,6 +76,8 @@ public class MenuFragment extends Fragment implements  AdapterView.OnItemClickLi
     DbHelper dbHelper;
     String DB = "OnlineShop.db";
     HTTPHelper httpHelper;
+    boolean sale = false;
+    IServiceBinder binder = null;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -83,16 +88,6 @@ public class MenuFragment extends Fragment implements  AdapterView.OnItemClickLi
         adapter = new ArrayAdapter<String>(getActivity(), android.R.layout.simple_list_item_1);
         listView.setAdapter(adapter);
         listView.setOnItemClickListener(this);
-//        dbHelper = new DbHelper(getContext(), DB, null, 1);
-//        String categories[] = dbHelper.getCategories();
-//        if(categories == null || categories.length == 0)
-//        {
-//            addItems();
-//            categories = dbHelper.getCategories();
-//        }
-//        for (String category : categories) {
-//            adapter.add(category);
-//        }
         httpHelper = new HTTPHelper();
         new Thread(new Runnable() {
             public void run() {
@@ -135,6 +130,27 @@ public class MenuFragment extends Fragment implements  AdapterView.OnItemClickLi
                 }
             }
         }).start();
+        //Binding the service
+        Intent intent = new Intent(getActivity(), SaleService.class);
+        requireActivity().bindService(intent, (ServiceConnection) getActivity(), Context.BIND_AUTO_CREATE);
+        binder = ((HomeActivity)getActivity()).getBinder();
+        Thread thread = new Thread(new Runnable() {
+            @Override
+            public void run() {
+                while(true)
+                {
+                    try {
+                        sale = binder.getSale();
+                        Thread.sleep(1000);
+                    } catch (RemoteException e) {
+                        e.printStackTrace();
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                    }
+                }
+            }
+        });
+        thread.start();
         return view;
     }
 
@@ -143,6 +159,7 @@ public class MenuFragment extends Fragment implements  AdapterView.OnItemClickLi
     public void onItemClick(AdapterView<?> adapterView, View view, int position, long l) {
         Intent intent = new Intent(getActivity(), ItemActivity.class);
         Bundle bundle = new Bundle();
+        bundle.putBoolean("sale", sale);
         bundle.putString("category", adapter.getItem(position));
         bundle.putString("username", getActivity().getIntent().getExtras().getString("username", "username"));
         intent.putExtras(bundle);

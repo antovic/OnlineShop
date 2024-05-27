@@ -97,7 +97,14 @@ public class ItemAdapter extends BaseAdapter {
         viewHolder.imageView.setImageDrawable(data.getImage());
         viewHolder.nameTextView.setText(data.getName());
         String rsd = context.getString(R.string.rsd);
-        viewHolder.costTextView.setText(String.valueOf(data.getPrice()) + rsd);
+        int newPrice = data.getPrice();
+        if(((ItemActivity)context).getIntent().getExtras().getBoolean("sale", false))
+        {
+            viewHolder.costTextView.setTextColor(((ItemActivity)context).getResources().getColor(R.color.teal_200));
+            newPrice = (int)(newPrice * 0.8);
+        }
+        data.setPrice(newPrice);
+        viewHolder.costTextView.setText(String.valueOf(newPrice) + rsd);
         ViewHolder finalViewHolder = viewHolder;
         viewHolder.button.setOnClickListener(new View.OnClickListener() {
             @Override

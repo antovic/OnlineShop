@@ -4,7 +4,10 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.content.ContextCompat;
 
 import android.annotation.SuppressLint;
+import android.content.BroadcastReceiver;
 import android.content.Context;
+import android.content.Intent;
+import android.content.IntentFilter;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.view.View;
@@ -30,11 +33,25 @@ public class ItemActivity extends AppCompatActivity implements View.OnClickListe
     DbHelper dbHelper;
     String DB = "OnlineShop.db";
     HTTPHelper httpHelper;
+    private BroadcastReceiver finishActivityReceiver;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_item);
 
+
+        // Initialize and register the BroadcastReceiver
+        finishActivityReceiver = new BroadcastReceiver() {
+            @Override
+            public void onReceive(Context context, Intent intent) {
+                getIntent().putExtra("isSale", false);
+                if ("com.example.FINISH_ACTIVITY".equals(intent.getAction())) {
+                    finish();
+                }
+            }
+        };
+        IntentFilter filter = new IntentFilter("com.example.FINISH_ACTIVITY");
+        registerReceiver(finishActivityReceiver, filter);
 
         category = getIntent().getExtras().getString("category", "category");
         username = getIntent().getExtras().getString("username", "username");
@@ -49,13 +66,6 @@ public class ItemActivity extends AppCompatActivity implements View.OnClickListe
         button = findViewById(R.id.buttonBack);
         button.setOnClickListener(this);
 
-//        dbHelper = new DbHelper(this, DB, null, 1);
-//
-//        ItemModel[] items = dbHelper.getItemsByCategory(this, category);
-//        for(ItemModel item : items)
-//        {
-//            adapter.add(item);
-//        }
         httpHelper = new HTTPHelper();
         new Thread(new Runnable() {
             public void run() {

@@ -4,8 +4,15 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
 
 import android.annotation.SuppressLint;
+import android.content.ComponentName;
+import android.content.Context;
+import android.content.Intent;
+import android.content.ServiceConnection;
 import android.graphics.Color;
 import android.os.Bundle;
+import android.os.IBinder;
+import android.os.RemoteException;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.LinearLayout;
@@ -13,7 +20,7 @@ import android.widget.TextView;
 
 import org.w3c.dom.Text;
 
-public class HomeActivity extends AppCompatActivity implements View.OnClickListener {
+public class HomeActivity extends AppCompatActivity implements View.OnClickListener, ServiceConnection {
 
     // Elements
     Button homeButton;
@@ -23,6 +30,7 @@ public class HomeActivity extends AppCompatActivity implements View.OnClickListe
     AccountFragment accountFragment;
     HomeFragment homeFragment;
     MenuFragment menuFragment;
+    IServiceBinder binder = null;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -55,6 +63,11 @@ public class HomeActivity extends AppCompatActivity implements View.OnClickListe
         accountButton.setBackgroundColor(Color.BLUE);
         accountButton.setTextColor(Color.WHITE);
         bagButton.setEnabled(false);
+
+        //Binding the service
+        Intent intent = new Intent(HomeActivity.this, SaleService.class);
+        bindService(intent, HomeActivity.this, Context.BIND_AUTO_CREATE);
+
     }
 
     @SuppressLint("NonConstantResourceId")
@@ -68,7 +81,6 @@ public class HomeActivity extends AppCompatActivity implements View.OnClickListe
                         .commit();
                 break;
             case R.id.menuButton:
-                //TODO - Menu button logic
                 menuButton.setBackgroundColor(Color.RED);
                 getSupportFragmentManager().beginTransaction()
                         .replace(R.id.fragmentLayout, menuFragment)
@@ -93,4 +105,31 @@ public class HomeActivity extends AppCompatActivity implements View.OnClickListe
             getSupportFragmentManager().beginTransaction().remove(fragment).commit();
     }
 
+    @Override
+    public void onServiceConnected(ComponentName componentName, IBinder iBinder) {
+        binder = IServiceBinder.Stub.asInterface(iBinder);
+        Log.d("sale", "prebinder: " + getIntent().getStringExtra("username"));
+        try {
+            binder.setUsername(getIntent().getStringExtra("username"));
+            Log.d("sale", "postbinder: " + binder.getUsername());
+        } catch (RemoteException e) {
+            e.printStackTrace();
+        }
+    }
+
+    @Override
+    public void onServiceDisconnected(ComponentName componentName) {
+        binder = null;
+    }
+
+    @Override
+    protected void onDestroy() {
+        unbindService(HomeActivity.this);
+        super.onDestroy();
+    }
+
+    // Method to retrieve the binder
+    public IServiceBinder getBinder() {
+        return binder;
+    }
 }

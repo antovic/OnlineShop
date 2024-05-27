@@ -1,7 +1,14 @@
 package vuk.antovic.onlineshop;
 
+import android.content.Context;
+import android.content.Intent;
+import android.content.ServiceConnection;
 import android.os.Bundle;
 import androidx.fragment.app.Fragment;
+
+import android.os.IBinder;
+import android.os.RemoteException;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -88,8 +95,10 @@ public class HomeFragment extends Fragment implements View.OnClickListener {
         itemPriceEditText = view.findViewById(R.id.itemPriceEditText);
         itemCategoryEditText = view.findViewById(R.id.itemCategoryEditText);
         itemImageEditText = view.findViewById(R.id.itemImageEditText);
+        Log.d("sale", username);
         adminView.setVisibility(dbHelper.isAdmin(username)?View.VISIBLE:View.INVISIBLE);
         welcomeUsername.setText(username);
+
         return view;
     }
 
