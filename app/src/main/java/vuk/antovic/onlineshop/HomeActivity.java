@@ -15,10 +15,7 @@ import android.os.RemoteException;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
-import android.widget.LinearLayout;
-import android.widget.TextView;
 
-import org.w3c.dom.Text;
 
 public class HomeActivity extends AppCompatActivity implements View.OnClickListener, ServiceConnection {
 
@@ -36,7 +33,6 @@ public class HomeActivity extends AppCompatActivity implements View.OnClickListe
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_home);
-        Bundle bundle = getIntent().getExtras();
 
         // Init elements
         homeButton = findViewById(R.id.homeButton);
@@ -107,11 +103,22 @@ public class HomeActivity extends AppCompatActivity implements View.OnClickListe
 
     @Override
     public void onServiceConnected(ComponentName componentName, IBinder iBinder) {
+        Log.d("utorak", "onServiceConnected");
         binder = IServiceBinder.Stub.asInterface(iBinder);
-        Log.d("sale", "prebinder: " + getIntent().getStringExtra("username"));
         try {
             binder.setUsername(getIntent().getStringExtra("username"));
-            Log.d("sale", "postbinder: " + binder.getUsername());
+        } catch (RemoteException e) {
+            e.printStackTrace();
+        }
+        try {
+            Log.d("utorak", String.valueOf(binder.getSale()));
+            if(binder.getSale())
+            {
+                menuButton.setBackgroundColor(Color.RED);
+                getSupportFragmentManager().beginTransaction()
+                        .replace(R.id.fragmentLayout, menuFragment)
+                        .commit();
+            }
         } catch (RemoteException e) {
             e.printStackTrace();
         }
@@ -122,9 +129,11 @@ public class HomeActivity extends AppCompatActivity implements View.OnClickListe
         binder = null;
     }
 
+
+
     @Override
     protected void onDestroy() {
-        unbindService(HomeActivity.this);
+        unbindService(this);
         super.onDestroy();
     }
 

@@ -12,47 +12,47 @@ import android.util.Log;
 
 import androidx.core.app.NotificationCompat;
 
-import java.time.LocalTime;
 
 public class SaleService extends Service {
-    Binder binder = null;
-    Thread thread = null;
+    static Binder binder = null;
+    static Thread thread = null;
 
     public SaleService() {}
 
     @Override
     public void onCreate() {
         super.onCreate();
-        thread = new Thread(new Runnable(){
-            @Override
-            public void run() {
-                while(true) {
-                    try{
-                        LocalTime now = LocalTime.now();
-                        if (true) {
-                            Thread.sleep(50);
-                            sendNotification();
-                            binder.setSale(true);
-                            Thread.sleep(10000);
-                            binder.setSale(false);
-                            Intent finishIntent = new Intent("com.example.FINISH_ACTIVITY");
-                            sendBroadcast(finishIntent);
-                            sendEndNotification();
-                            Thread.sleep(5000000);
+        if(thread == null) {
+            thread = new Thread(new Runnable() {
+                @Override
+                public void run() {
+                    while (true) {
+                        try {
+                            // add condition for starting a sale
+                            if (true) {
+                                Thread.sleep(50);
+                                binder.setSale(true);
+                                sendNotification();
+                                Thread.sleep(10000);
+                                binder.setSale(false);
+                                Intent finishIntent = new Intent("com.example.FINISH_ACTIVITY");
+                                sendBroadcast(finishIntent);
+                                sendEndNotification();
+                                Thread.sleep(10000);
+                            }
+                            Thread.sleep(1000);
+                        } catch (InterruptedException | RemoteException e) {
+                            Thread.currentThread().interrupt();
                         }
-                        Thread.sleep(1000);
-                    }catch (InterruptedException | RemoteException e){
-                        Thread.currentThread().interrupt();
-                    }
 
+                    }
                 }
-            }
-        });
+            });
+        }
     }
 
     public void sendNotification() throws RemoteException {
-        NotificationManager mNotificationManager =
-                (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
+        NotificationManager mNotificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
 
         // Create notification channel
         NotificationChannel channel = new NotificationChannel("1",
@@ -66,16 +66,19 @@ public class SaleService extends Service {
         intent.putExtra("sale", binder.getSale());
         intent.putExtra("username", binder.getUsername());
         intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
-        PendingIntent pendingIntent = PendingIntent.getActivity(this, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT | PendingIntent.FLAG_IMMUTABLE);
+        PendingIntent pendingIntent = PendingIntent.getActivity(this,
+                0,
+                intent,
+                PendingIntent.FLAG_UPDATE_CURRENT | PendingIntent.FLAG_IMMUTABLE);
 
         // Build the notification
         NotificationCompat.Builder mBuilder = new NotificationCompat.Builder(getApplicationContext(), "1")
-                .setSmallIcon(R.mipmap.ic_launcher) // Notification icon
-                .setContentTitle("The sale has begun!") // Title for notification
-                .setContentText("Click to see more.") // Message for notification
-                .setPriority(NotificationCompat.PRIORITY_HIGH) // Set notification priority to high
-                .setVisibility(NotificationCompat.VISIBILITY_PUBLIC) // Set notification visibility to public
-                .setAutoCancel(true) // Clear notification after click
+                .setSmallIcon(R.mipmap.ic_launcher)
+                .setContentTitle("The sale has begun!")
+                .setContentText("Click to see more.")
+                .setPriority(NotificationCompat.PRIORITY_HIGH)
+                .setVisibility(NotificationCompat.VISIBILITY_PUBLIC)
+                .setAutoCancel(true)
                 .setContentIntent(pendingIntent);
 
         // Notify
@@ -83,19 +86,19 @@ public class SaleService extends Service {
     }
 
     public void sendEndNotification() {
-        NotificationManager mNotificationManager =
-                (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
+        NotificationManager mNotificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
         NotificationChannel channel = new NotificationChannel("1",
                 "myChannel",
-                NotificationManager.IMPORTANCE_DEFAULT);
+                NotificationManager.IMPORTANCE_HIGH);
         channel.setDescription("YOUR_NOTIFICATION_CHANNEL_DESCRIPTION");
         mNotificationManager.createNotificationChannel(channel);
         NotificationCompat.Builder mBuilder = new NotificationCompat.Builder(getApplicationContext(), "1")
-                .setSmallIcon(R.mipmap.ic_launcher) // notification icon
-                .setContentTitle("SALE HAS ENDED!") // title for notification
-                .setContentText("Unfortunately, today's sale has ended!")// message for notification
-                .setAutoCancel(true); // clear notification after click
+                .setSmallIcon(R.mipmap.ic_launcher)
+                .setContentTitle("SALE HAS ENDED!")
+                .setContentText("Unfortunately, today's sale has ended!")
+                .setAutoCancel(true);
         mNotificationManager.notify(0, mBuilder.build());
+
     }
 
 
@@ -108,18 +111,12 @@ public class SaleService extends Service {
         if (!thread.isAlive()) {
             thread.start();
         }
-
         return binder;
     }
 
 
     @Override
     public boolean onUnbind(Intent intent) {
-        try {
-            binder.setSale(false);
-        } catch (RemoteException e) {
-            e.printStackTrace();
-        }
         return super.onUnbind(intent);
     }
 }

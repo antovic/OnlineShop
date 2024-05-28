@@ -3,7 +3,7 @@ package vuk.antovic.onlineshop;
 import android.os.RemoteException;
 
 public class Binder extends  IServiceBinder.Stub{
-    private boolean sale;
+    private static boolean sale;
     private String username;
 
     @Override
@@ -18,11 +18,11 @@ public class Binder extends  IServiceBinder.Stub{
 
     @Override
     public boolean getSale() throws RemoteException {
-        return this.sale;
+        return Binder.sale;
     }
 
     @Override
     public void setSale(boolean sale) throws RemoteException {
-        this.sale = sale;
+        Binder.sale = sale;
     }
 }

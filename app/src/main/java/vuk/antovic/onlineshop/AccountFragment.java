@@ -59,6 +59,7 @@ public class AccountFragment extends Fragment implements View.OnClickListener {
 
     Button purchaseHistoryButton;
     Button myProfileButton;
+    IServiceBinder binder = null;
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
@@ -70,6 +71,7 @@ public class AccountFragment extends Fragment implements View.OnClickListener {
         purchaseHistoryButton.setOnClickListener(this);
         myProfileButton = view.findViewById(R.id.myProfileButton);
         myProfileButton.setOnClickListener(this);
+        binder = ((HomeActivity)getActivity()).getBinder();
         return view;
     }
 
